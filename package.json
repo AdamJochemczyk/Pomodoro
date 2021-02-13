@@ -1,0 +1,21 @@
+{
+  "name": "pomodoro",
+  "version": "1.0.0",
+  "description": "",
+  "main": "postcss.config.js",
+  "dependencies": {
+    "autoprefixer": "^10.2.4",
+    "postcss": "^8.2.6",
+    "tailwindcss": "^2.0.3",
+    "typescript": "^4.1.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "style": "npx tailwindcss-cli@latest build ./src/styles.css -o ./dist/tailwind.css",
+    "js": "tsc ./src/app.ts",
+    "test": "echo you must config tests"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
