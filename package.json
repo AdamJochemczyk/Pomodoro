@@ -12,7 +12,7 @@
   "devDependencies": {},
   "scripts": {
     "style": "npx tailwindcss-cli@latest build ./src/styles.css -o ./dist/tailwind.css",
-    "js": "tsc ./src/app.ts",
+    "js": "tsc",
     "test": "echo you must config tests"
   },
   "keywords": [],
