@@ -6,6 +6,7 @@ let defaultSessions=4;
 
 let currentSessions=defaultSessions;
 let isSession=true;
+let playBlock=false;
 let minutes:number=defaultMinutes;
 let seconds:number=defaultSeconds;
 
@@ -27,6 +28,7 @@ const longBreakInput=document.querySelector("input[name='longBreak']");
 const sessionsInput=document.querySelector("input[name='sessions']");
 const sessionsTimeInput=document.querySelector("input[name='sessionsTime']");
 const setConfigBtn=document.getElementById("config")
+const sessionsToBreak=document.getElementById("sessionsToBreak")
 
 const template=()=>{
   clockMinutes.textContent = minutes.toString();
@@ -45,14 +47,15 @@ const secondsTimer=()=> {
       if (minutes <= 0) {
         clearInterval(minutes_interval);
         clearInterval(seconds_interval);
-        done.textContent ="Session completed! Take a break";
+        done.textContent =`${isSession ? "Session" : "Break"} completed! ${isSession ? "Take a break" : "Start new session"}`;
         done.classList.add("show_message");
         isSession=!isSession;
         currentSessions--;
         if(currentSessions<0){
           currentSessions=defaultSessions;
         }
-        document.getElementById("sessionsToBreak").textContent=`Sessions to long break: ${currentSessions}`;
+        sessionsToBreak.textContent=`Sessions to long break: ${currentSessions}`;
+        playBlock=false;
         bell.play()
       }
       seconds = 60;
@@ -60,7 +63,10 @@ const secondsTimer=()=> {
   }
 
 const start=()=> {
+  if(!playBlock){
+  playBlock=true;
   click.play();
+  done.textContent=``;
   if(currentSessions===0){
     minutes=defaultLongBreak
   }else if(isSession){
@@ -75,6 +81,7 @@ const start=()=> {
 
   minutes_interval = setInterval(()=>minutesTimer(), 60000);
   seconds_interval = setInterval(()=>secondsTimer(), 1000);
+  }
 }
 
 playBtn.addEventListener("click",()=>start())
@@ -138,10 +145,10 @@ setConfigBtn.addEventListener("click",()=>{
   const sessionsCount=getDataFromInputElement(sessionsInput);
   const sessionsTime=getDataFromInputElement(sessionsTimeInput);
 
-  const breakTimeVal=validateInputData(breakTime,1);
+  const breakTimeVal=validateInputData(breakTime,5);
   const longBreakTimeVal=validateInputData(longBreakTime,15);
   const sessionsCountVal=validateInputData(sessionsCount,2);
-  const sessionsTimeVal=validateInputData(sessionsTime,25);
+  const sessionsTimeVal=validateInputData(sessionsTime,24);
 
   defaultMinutes=sessionsTimeVal;
   defaultBreak=breakTimeVal;
@@ -153,8 +160,8 @@ setConfigBtn.addEventListener("click",()=>{
   setFormInputs(sessionsInput,sessionsCountVal);
   setFormInputs(sessionsTimeInput,sessionsTimeVal);
 
-  document.getElementById("sessionsToBreak").textContent=`Sessions to long break: ${sessionsCountVal}`;
+  sessionsToBreak.textContent=`Sessions to long break: ${sessionsCountVal}`;
   settingsForm[0].classList.toggle("settingsForm--show")
 })
 
-document.getElementById("sessionsToBreak").textContent=`Sessions to long break: ${defaultSessions}`;
+sessionsToBreak.textContent=`Sessions to long break: ${defaultSessions}`;
