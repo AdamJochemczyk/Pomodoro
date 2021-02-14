@@ -1,5 +1,12 @@
-var minutes = 0;
-var seconds = 10;
+var defaultMinutes = 24;
+var defaultSeconds = 59;
+var defaultLongBreak = 15;
+var defaultBreak = 5;
+var defaultSessions = 4;
+var currentSessions = defaultSessions;
+var isSession = true;
+var minutes = defaultMinutes;
+var seconds = defaultSeconds;
 var click = new Audio("click.wav");
 var bell = new Audio("gong.wav");
 var minutes_interval;
@@ -10,6 +17,11 @@ var done = document.getElementById("done");
 var playBtn = document.getElementById("play");
 var settingsBtn = document.getElementById("settings");
 var settingsForm = document.getElementsByClassName("settingsForm");
+var breakTimeInput = document.querySelector("input[name='break']");
+var longBreakInput = document.querySelector("input[name='longBreak']");
+var sessionsInput = document.querySelector("input[name='sessions']");
+var sessionsTimeInput = document.querySelector("input[name='sessionsTime']");
+var setConfigBtn = document.getElementById("config");
 var template = function () {
     clockMinutes.textContent = minutes.toString();
     clockSeconds.textContent = seconds.toString();
@@ -27,6 +39,12 @@ var secondsTimer = function () {
             clearInterval(seconds_interval);
             done.textContent = "Session completed! Take a break";
             done.classList.add("show_message");
+            isSession = !isSession;
+            currentSessions--;
+            if (currentSessions < 0) {
+                currentSessions = defaultSessions;
+            }
+            document.getElementById("sessionsToBreak").textContent = "Sessions to long break: " + currentSessions;
             bell.play();
         }
         seconds = 60;
@@ -34,8 +52,16 @@ var secondsTimer = function () {
 };
 var start = function () {
     click.play();
-    minutes = 1;
-    seconds = 10;
+    if (currentSessions === 0) {
+        minutes = defaultLongBreak;
+    }
+    else if (isSession) {
+        minutes = defaultMinutes;
+    }
+    else {
+        minutes = defaultBreak;
+    }
+    seconds = defaultSeconds;
     clockMinutes.textContent = minutes.toString();
     clockSeconds.textContent = seconds.toString();
     minutes_interval = setInterval(function () { return minutesTimer(); }, 60000);
@@ -45,4 +71,74 @@ playBtn.addEventListener("click", function () { return start(); });
 settingsBtn.addEventListener("click", function () {
     settingsForm[0].classList.toggle("settingsForm--show");
 });
+breakTimeInput.addEventListener("change", function (e) {
+    var breakTime = parseInt(e.currentTarget.value);
+    if (breakTime <= 0) {
+        breakTime = 1;
+    }
+    else if (breakTime >= 30) {
+        breakTime = 30;
+    }
+    breakTimeInput.value = breakTime.toString();
+});
+longBreakInput.addEventListener("change", function (e) {
+    var longBreakTime = parseInt(e.currentTarget.value);
+    if (longBreakTime <= 15) {
+        longBreakTime = 15;
+    }
+    else if (longBreakTime >= 45) {
+        longBreakTime = 45;
+    }
+    longBreakInput.value = longBreakTime.toString();
+});
+sessionsInput.addEventListener("change", function (e) {
+    var sessionsCount = parseInt(e.currentTarget.value);
+    if (sessionsCount <= 2) {
+        sessionsCount = 2;
+    }
+    else if (sessionsCount >= 6) {
+        sessionsCount = 6;
+    }
+    sessionsInput.value = sessionsCount.toString();
+});
+sessionsTimeInput.addEventListener("change", function (e) {
+    var sessionsTime = parseInt(e.currentTarget.value);
+    if (sessionsTime <= 25) {
+        sessionsTime = 25;
+    }
+    else if (sessionsTime >= 45) {
+        sessionsTime = 45;
+    }
+    sessionsTimeInput.value = sessionsTime.toString();
+});
+var validateInputData = function (input, minValue) {
+    return (input !== null && !isNaN(input)) ? input : minValue;
+};
+var getDataFromInputElement = function (element) {
+    return parseInt(element.value);
+};
+var setFormInputs = function (element, value) {
+    element.value = value.toString();
+};
+setConfigBtn.addEventListener("click", function () {
+    var breakTime = getDataFromInputElement(breakTimeInput);
+    var longBreakTime = getDataFromInputElement(longBreakInput);
+    var sessionsCount = getDataFromInputElement(sessionsInput);
+    var sessionsTime = getDataFromInputElement(sessionsTimeInput);
+    var breakTimeVal = validateInputData(breakTime, 1);
+    var longBreakTimeVal = validateInputData(longBreakTime, 15);
+    var sessionsCountVal = validateInputData(sessionsCount, 2);
+    var sessionsTimeVal = validateInputData(sessionsTime, 25);
+    defaultMinutes = sessionsTimeVal;
+    defaultBreak = breakTimeVal;
+    defaultLongBreak = longBreakTimeVal;
+    defaultSessions = sessionsCountVal;
+    setFormInputs(breakTimeInput, breakTimeVal);
+    setFormInputs(longBreakInput, longBreakTimeVal);
+    setFormInputs(sessionsInput, sessionsCountVal);
+    setFormInputs(sessionsTimeInput, sessionsTimeVal);
+    document.getElementById("sessionsToBreak").textContent = "Sessions to long break: " + sessionsCountVal;
+    settingsForm[0].classList.toggle("settingsForm--show");
+});
+document.getElementById("sessionsToBreak").textContent = "Sessions to long break: " + defaultSessions;
 //# sourceMappingURL=app.js.map

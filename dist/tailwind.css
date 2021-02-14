@@ -31209,13 +31209,13 @@ body{
 }
 
 .settingsForm input[type="number"]{
-  width: 60px;
+  width: 50px;
   color: black;
   padding: 0 5px;
 }
 
 .settingsForm label{
-  width: 150px;
+  width: 200px;
 }
 
 .settingsForm--show{
