@@ -25,17 +25,40 @@
         </div>
       </section>
 
-      <section clsss="container mx-auto flex justify-center">
+      <section class="container mx-auto flex justify-center text-white text-2xl my-4">
         <h3 id="done"></h3>
       </section>
 
       <section class="container mx-auto flex justify-center my-3">
-        <button id="play"><i class="fas fa-play"></i></button>
+        <button class="mx-2" id="play"><i class="fas fa-play"></i></button>
         <a href="index.html"><i class="fas fa-redo-alt"></i></a>
       </section>
 
+      <section class="container mx-auto flex justify-center my-5 text-white text-2xl">
+        <h3 id="sessionsToBreak">Sessions to long break: 4</h3>
+      </section>
+
       <section class="container mx-auto flex justify-center">
-        <button class="text-white px-3 py-2 text-lg border-white border-2 rounded-xl transition duration-500 ease-in-out bg-blue-600 transform hover:-translate-y-1" id="settings"><i class="fas fa-cog"></i>Settings</button>
+        <button class="text-white px-3 py-2 text-lg border-white border-2 rounded-xl transition duration-500 ease-in-out bg-blue-600 transform hover:-translate-y-1" id="settings"><i class="fas fa-cog"></i> Settings</button>
+      </section>
+
+      <section class="container mx-auto flex flex-col justify-center settingsForm text-white text-2xl my-2 border-white border-2">
+        <div class="flex mx-auto my-2">
+          <label for="break">Break time:</label>
+          <input type="number" name="break" min="1" max="30">
+        </div>
+        <div class="flex mx-auto my-2">
+          <label for="break">Long break time:</label>
+          <input type="number" name="longBreak" min="15" max="45">
+        </div>
+        <div class="flex mx-auto my-2">
+          <label for="break">Sessions:</label>
+          <input type="number" name="sessions" min="2" max="6">
+        </div>
+        <div class="flex mx-auto my-2">
+          <label for="break">Session time:</label>
+          <input type="number" name="sessionsTime" min="25" max="45">
+        </div>
       </section>
     </main>
   </body>

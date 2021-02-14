@@ -4,24 +4,29 @@ var click = new Audio("click.wav");
 var bell = new Audio("gong.wav");
 var minutes_interval;
 var seconds_interval;
+var clockMinutes = document.getElementById("minutes");
+var clockSeconds = document.getElementById("seconds");
+var done = document.getElementById("done");
+var playBtn = document.getElementById("play");
+var settingsBtn = document.getElementById("settings");
+var settingsForm = document.getElementsByClassName("settingsForm");
 var template = function () {
-    document.getElementById("minutes").textContent = minutes.toString();
-    document.getElementById("seconds").textContent = seconds.toString();
+    clockMinutes.textContent = minutes.toString();
+    clockSeconds.textContent = seconds.toString();
 };
 var minutesTimer = function () {
-    minutes = minutes--;
-    document.getElementById("minutes").textContent = minutes.toString();
+    minutes--;
+    clockMinutes.textContent = minutes.toString();
 };
 var secondsTimer = function () {
-    seconds = seconds--;
-    document.getElementById("seconds").textContent = seconds.toString();
+    seconds--;
+    clockSeconds.textContent = seconds < 10 ? "0" + seconds : "" + seconds;
     if (seconds <= 0) {
         if (minutes <= 0) {
             clearInterval(minutes_interval);
             clearInterval(seconds_interval);
-            document.getElementById("done").textContent =
-                "Session completed! Take a break";
-            document.getElementById("done").classList.add("show_message");
+            done.textContent = "Session completed! Take a break";
+            done.classList.add("show_message");
             bell.play();
         }
         seconds = 60;
@@ -29,13 +34,15 @@ var secondsTimer = function () {
 };
 var start = function () {
     click.play();
-    console.log("start");
-    minutes = 24;
-    seconds = 59;
-    document.getElementById("minutes").textContent = minutes.toString();
-    document.getElementById("seconds").textContent = seconds.toString();
-    minutes_interval = setInterval(minutesTimer, 60000);
-    seconds_interval = setInterval(secondsTimer, 1000);
+    minutes = 1;
+    seconds = 10;
+    clockMinutes.textContent = minutes.toString();
+    clockSeconds.textContent = seconds.toString();
+    minutes_interval = setInterval(function () { return minutesTimer(); }, 60000);
+    seconds_interval = setInterval(function () { return secondsTimer(); }, 1000);
 };
-document.getElementById("play").addEventListener("click", function () { return start(); });
+playBtn.addEventListener("click", function () { return start(); });
+settingsBtn.addEventListener("click", function () {
+    settingsForm[0].classList.toggle("settingsForm--show");
+});
 //# sourceMappingURL=app.js.map
