@@ -5,6 +5,7 @@ var defaultBreak = 5;
 var defaultSessions = 4;
 var currentSessions = defaultSessions;
 var isSession = true;
+var playBlock = false;
 var minutes = defaultMinutes;
 var seconds = defaultSeconds;
 var click = new Audio("click.wav");
@@ -22,6 +23,7 @@ var longBreakInput = document.querySelector("input[name='longBreak']");
 var sessionsInput = document.querySelector("input[name='sessions']");
 var sessionsTimeInput = document.querySelector("input[name='sessionsTime']");
 var setConfigBtn = document.getElementById("config");
+var sessionsToBreak = document.getElementById("sessionsToBreak");
 var template = function () {
     clockMinutes.textContent = minutes.toString();
     clockSeconds.textContent = seconds.toString();
@@ -37,35 +39,41 @@ var secondsTimer = function () {
         if (minutes <= 0) {
             clearInterval(minutes_interval);
             clearInterval(seconds_interval);
-            done.textContent = "Session completed! Take a break";
+            done.textContent = (isSession ? "Session" : "Break") + " completed! " + (isSession ? "Take a break" : "Start new session");
             done.classList.add("show_message");
             isSession = !isSession;
             currentSessions--;
             if (currentSessions < 0) {
                 currentSessions = defaultSessions;
             }
-            document.getElementById("sessionsToBreak").textContent = "Sessions to long break: " + currentSessions;
+            sessionsToBreak.textContent = "Sessions to long break: " + currentSessions;
+            playBlock = false;
             bell.play();
         }
         seconds = 60;
     }
 };
 var start = function () {
-    click.play();
-    if (currentSessions === 0) {
-        minutes = defaultLongBreak;
+    if (!playBlock) {
+        playBlock = true;
+        console.log("Start");
+        click.play();
+        done.textContent = "";
+        if (currentSessions === 0) {
+            minutes = defaultLongBreak;
+        }
+        else if (isSession) {
+            minutes = defaultMinutes;
+        }
+        else {
+            minutes = defaultBreak;
+        }
+        seconds = defaultSeconds;
+        clockMinutes.textContent = minutes.toString();
+        clockSeconds.textContent = seconds.toString();
+        minutes_interval = setInterval(function () { return minutesTimer(); }, 60000);
+        seconds_interval = setInterval(function () { return secondsTimer(); }, 1000);
     }
-    else if (isSession) {
-        minutes = defaultMinutes;
-    }
-    else {
-        minutes = defaultBreak;
-    }
-    seconds = defaultSeconds;
-    clockMinutes.textContent = minutes.toString();
-    clockSeconds.textContent = seconds.toString();
-    minutes_interval = setInterval(function () { return minutesTimer(); }, 60000);
-    seconds_interval = setInterval(function () { return secondsTimer(); }, 1000);
 };
 playBtn.addEventListener("click", function () { return start(); });
 settingsBtn.addEventListener("click", function () {
@@ -125,10 +133,10 @@ setConfigBtn.addEventListener("click", function () {
     var longBreakTime = getDataFromInputElement(longBreakInput);
     var sessionsCount = getDataFromInputElement(sessionsInput);
     var sessionsTime = getDataFromInputElement(sessionsTimeInput);
-    var breakTimeVal = validateInputData(breakTime, 1);
+    var breakTimeVal = validateInputData(breakTime, 5);
     var longBreakTimeVal = validateInputData(longBreakTime, 15);
     var sessionsCountVal = validateInputData(sessionsCount, 2);
-    var sessionsTimeVal = validateInputData(sessionsTime, 25);
+    var sessionsTimeVal = validateInputData(sessionsTime, 24);
     defaultMinutes = sessionsTimeVal;
     defaultBreak = breakTimeVal;
     defaultLongBreak = longBreakTimeVal;
@@ -137,8 +145,8 @@ setConfigBtn.addEventListener("click", function () {
     setFormInputs(longBreakInput, longBreakTimeVal);
     setFormInputs(sessionsInput, sessionsCountVal);
     setFormInputs(sessionsTimeInput, sessionsTimeVal);
-    document.getElementById("sessionsToBreak").textContent = "Sessions to long break: " + sessionsCountVal;
+    sessionsToBreak.textContent = "Sessions to long break: " + sessionsCountVal;
     settingsForm[0].classList.toggle("settingsForm--show");
 });
-document.getElementById("sessionsToBreak").textContent = "Sessions to long break: " + defaultSessions;
+sessionsToBreak.textContent = "Sessions to long break: " + defaultSessions;
 //# sourceMappingURL=app.js.map
