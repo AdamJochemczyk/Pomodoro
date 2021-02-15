@@ -15,4 +15,4 @@ Live: https://adamjochemczyk.github.io/Pomodoro/
 
 ## Screenshots
 
-![Layout](./screens/screen1.png)
+![Layout](screens/screen1.png)
